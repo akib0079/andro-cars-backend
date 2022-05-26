@@ -23,13 +23,24 @@ async function runDataBase() {
     try {
 
         await client.connect();
-        const dName = client.db("AndroCars").collection("Tools");
+        const ToolsDb = client.db("AndroCars").collection("Tools");
+
+        // Get all the tools.
         app.get('/tools', async (req, res) => {
             const query = {};
-            const cursor = dName.find(query);
+            const cursor = ToolsDb.find(query);
 
-            const allBooks = await cursor.toArray();
-            res.send(allBooks);
+            const allTools = await cursor.toArray();
+            res.send(allTools);
+        });
+
+        // Get a single tools.
+        app.get('/tools/:id', async (req, res) => {
+            const id = req.params;
+            const query = { _id: ObjectId(id) };
+            const data = await ToolsDb.findOne(query);
+
+            res.send(data);
         });
     }
     finally {
