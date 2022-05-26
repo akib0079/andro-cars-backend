@@ -13,6 +13,33 @@ app.use(express.json())
 
 
 
+// Connecting application.
+const uri = `mongodb+srv://${process.env.DataBase_UName}:${process.env.DataBase_Pass}@cluster0.ha03r1k.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
+
+async function runDataBase() {
+    try {
+
+        await client.connect();
+        const dName = client.db("AndroCars").collection("Tools");
+        app.get('/tools', async (req, res) => {
+            const query = {};
+            const cursor = dName.find(query);
+
+            const allBooks = await cursor.toArray();
+            res.send(allBooks);
+        });
+    }
+    finally {
+
+    }
+}
+
+runDataBase().catch(console.dir);
+
+
 app.get('/', (req, res) => {
     res.send('Connecting to Andro Cars...! Connected now..')
 })
