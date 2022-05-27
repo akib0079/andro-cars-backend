@@ -80,6 +80,35 @@ async function runDataBase() {
             const result = await userCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         })
+
+        // Get a all users Detail.
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const cursor = userCollection.find(query);
+
+            const allUser = await cursor.toArray();
+            res.send(allUser);
+        });
+
+        // Get a single user Detail.
+        // app.get('/users/:id', async (req, res) => {
+        //     const id = req.params;
+        //     const query = { _id: ObjectId(id) };
+        //     const user = await userCollection.findOne(query);
+
+        //     res.send(user);
+        // });
+
+        // Get a single user Detail.
+        app.get('/user', async (req, res) => {
+            const email = req.query.email;
+            console.log(email);
+            const query = { email: email };
+            const cursor = userCollection.find(query);
+
+            const user = await cursor.toArray();
+            res.send(user);
+        });
     }
     finally {
 
