@@ -28,6 +28,7 @@ async function runDataBase() {
 
         // Orders
         const OrdersDb = client.db("AndroCars").collection("Orders");
+        const userCollection = client.db("AndroCars").collection("Users");
 
         // Get all the tools.
         app.get('/tools', async (req, res) => {
@@ -51,6 +52,32 @@ async function runDataBase() {
         app.post('/orders', async (req, res) => {
             const newOrder = req.body;
             const result = await OrdersDb.insertOne(newOrder);
+            res.send(result);
+        })
+
+        // creating user.
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        // update user.
+        app.put('/update-user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         })
     }
