@@ -50,6 +50,13 @@ async function runDataBase() {
             res.send(data);
         });
 
+        // insert a tool.
+        app.post('/post-tool', async (req, res) => {
+            const tool = req.body;
+            const result = await ToolsDb.insertOne(tool);
+            res.send(result);
+        })
+
         // insert an order.
         app.post('/orders', async (req, res) => {
             const newOrder = req.body;
@@ -124,7 +131,7 @@ async function runDataBase() {
             res.send(result);
         })
 
-        // Get a single user Detail.
+        // // Get a single user Detail.
         // app.get('/users/:id', async (req, res) => {
         //     const id = req.params;
         //     const query = { _id: ObjectId(id) };
