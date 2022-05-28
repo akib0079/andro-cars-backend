@@ -113,6 +113,17 @@ async function runDataBase() {
             res.send(allUser);
         });
 
+        // Update Admin role.
+        app.put('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { role: 'admin' },
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
         // Get a single user Detail.
         // app.get('/users/:id', async (req, res) => {
         //     const id = req.params;
