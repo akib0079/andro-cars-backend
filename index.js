@@ -28,7 +28,9 @@ async function runDataBase() {
 
         // Orders
         const OrdersDb = client.db("AndroCars").collection("Orders");
+        // user collection
         const userCollection = client.db("AndroCars").collection("Users");
+        const reviewCol = client.db("AndroCars").collection("Reviews");
 
         // Get all the tools.
         app.get('/tools', async (req, res) => {
@@ -55,16 +57,37 @@ async function runDataBase() {
             res.send(result);
         })
 
-        // creating user.
-        app.put('/user/:email', async (req, res) => {
-            const email = req.params.email;
-            const user = req.body;
-            const filter = { email: email };
-            const options = { upsert: true };
-            const updateDoc = {
-                $set: user,
-            };
-            const result = await userCollection.updateOne(filter, updateDoc, options);
+        // Get all orders
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = OrdersDb.find(query);
+
+            const orders = await cursor.toArray();
+            res.send(orders);
+        });
+
+        // single order
+        app.get('/order', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = OrdersDb.find(query);
+
+            const order = await cursor.toArray();
+            res.send(order);
+        });
+
+        // Delete order
+        app.delete('/delete-order/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await OrdersDb.deleteOne(query);
+            res.send(order);
+        })
+
+        // Post review.
+        app.post('/post-review/', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCol.insertOne(review);
             res.send(result);
         })
 
@@ -102,13 +125,24 @@ async function runDataBase() {
         // Get a single user Detail.
         app.get('/user', async (req, res) => {
             const email = req.query.email;
-            console.log(email);
             const query = { email: email };
             const cursor = userCollection.find(query);
 
             const user = await cursor.toArray();
             res.send(user);
         });
+
+        // Get all reviews.
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewCol.find(query);
+
+            const allUser = await cursor.toArray();
+            res.send(allUser);
+        });
+
+
+
     }
     finally {
 
