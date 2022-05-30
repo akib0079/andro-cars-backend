@@ -83,6 +83,15 @@ async function runDataBase() {
             res.send(order);
         });
 
+        // get single orders by ID.
+        app.get('/order/:id', async (req, res) => {
+            const id = req.params;
+            const query = { _id: ObjectId(id) };
+            const data = await OrdersDb.findOne(query);
+
+            res.send(data);
+        });
+
         // Delete order
         app.delete('/delete-order/:id', async (req, res) => {
             const id = req.params.id;
